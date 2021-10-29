@@ -18,12 +18,9 @@
     <label for="exampleInputPassword1">Nombres</label>
     <input type="text" class="form-control" placeholder="Ingrese sus nombres" @bind-value="@name">
 </div>
-<div class="form-check">
-    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-</div>
 
 <button class="btn btn-primary" @onclick="OnInitializedAsync">Generar</button>
-
+<br />
 @if (!String.IsNullOrEmpty(_message))
 {
     <br />
