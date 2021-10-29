@@ -2,8 +2,8 @@
 
 <h1>Listar</h1>
 
-@using System.Text.Json
-@using System.Text.Json.Serialization;
+@using System.IO
+@using Microsoft.Extensions.Configuration;
 @using Newtonsoft.Json
 @using Domain.Entities;
 @inject IHttpClientFactory ClientFactory
@@ -46,8 +46,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        var config = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile("appsettings.json").Build();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:44396/api/SearchList");
+        var request = new HttpRequestMessage(HttpMethod.Get, config["URL_API"].ToString() + $"SearchList");
         var client = ClientFactory.CreateClient();
 
         var response = await client.SendAsync(request);

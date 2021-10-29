@@ -1,12 +1,13 @@
 ﻿
 @page "/generadorcodigo"
 
+@using Microsoft.Extensions.Configuration;
 @using System.Text
 @using Newtonsoft.Json
-@using System.Text.Json
 @using System.Globalization;
 @using System.Text.RegularExpressions;
 @using Domain.Entities;
+@using System.IO
 @inject IHttpClientFactory ClientFactory
 
 <h1>GeneradorCodigo</h1>
@@ -42,98 +43,102 @@
 
 
 @code { private string name { get; set; }
-    private string email { get; set; }
-    private static string _message = string.Empty;
-    private bool shouldRender;
-    private bool _isvalid = true;
-    private bool _isvalidName = true;
+            private string email { get; set; }
+            private static string _message = string.Empty;
+            private bool shouldRender;
+            private bool _isvalid = true;
+            private bool _isvalidName = true;
 
-    protected override bool ShouldRender() => shouldRender;
 
-    private async Task OnInitializedAsync()
-    {
-        try
-        {
-            if (IsValidEmail(email))
+            protected override bool ShouldRender() => shouldRender;
+
+            private async Task OnInitializedAsync()
             {
-                if (!string.IsNullOrEmpty(name))
+                var config = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appsettings.json").Build();
+                try
                 {
-                    _isvalid = true;
-                    _isvalidName = true;
-                    var request = new HttpRequestMessage(HttpMethod.Post, $"https://localhost:44396/api/GenerateCode");
-                    var client = ClientFactory.CreateClient();
-
-                    request.Content = new StringContent(JsonConvert.SerializeObject(new Client() { Name = name, Email = email }), Encoding.UTF8, "application/json");
-
-                    var response = await client.SendAsync(request);
-
-                    if (response.IsSuccessStatusCode)
+                    if (IsValidEmail(email))
                     {
-                        using var responseStream = await response.Content.ReadAsStreamAsync();
-                        ResponseCustom _response = await System.Text.Json.JsonSerializer.DeserializeAsync<ResponseCustom>(responseStream);
-                        _message = _response.message.ToString();
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            _isvalid = true;
+                            _isvalidName = true;
+                            var request = new HttpRequestMessage(HttpMethod.Post, config["URL_API"].ToString() + $"GenerateCode");
+                            var client = ClientFactory.CreateClient();
+
+                            request.Content = new StringContent(JsonConvert.SerializeObject(new Client() { Name = name, Email = email }), Encoding.UTF8, "application/json");
+
+                            var response = await client.SendAsync(request);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                using var responseStream = await response.Content.ReadAsStreamAsync();
+                                ResponseCustom _response = await System.Text.Json.JsonSerializer.DeserializeAsync<ResponseCustom>(responseStream);
+                                _message = _response.message.ToString();
+                            }
+                        }
+                        else
+                        {
+                            _isvalid = true;
+                            _isvalidName = false;
+                        }
+                    }
+                    else
+                    {
+                        _isvalid = false;
+                    }
+                    shouldRender = true;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+
+            }
+
+
+            public static bool IsValidEmail(string email)
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                    return false;
+
+                try
+                {
+                    // Normalize the domain
+                    email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
+                                          RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                    // Examines the domain part of the email and normalizes it.
+                    string DomainMapper(Match match)
+                    {
+                        // Use IdnMapping class to convert Unicode domain names.
+                        var idn = new IdnMapping();
+
+                        // Pull out and process domain name (throws ArgumentException on invalid)
+                        string domainName = idn.GetAscii(match.Groups[2].Value);
+
+                        return match.Groups[1].Value + domainName;
                     }
                 }
-                else
+                catch (RegexMatchTimeoutException e)
                 {
-                    _isvalid = true;
-                    _isvalidName = false;
+                    return false;
                 }
-            }
-            else
-            {
-                _isvalid = false;
-            }
-            shouldRender = true;
-        }
-        catch (Exception ex)
-        {
-            throw;
-        }
+                catch (ArgumentException e)
+                {
+                    return false;
+                }
 
-    }
-
-
-    public static bool IsValidEmail(string email)
-    {
-        if (string.IsNullOrWhiteSpace(email))
-            return false;
-
-        try
-        {
-            // Normalize the domain
-            email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
-                                  RegexOptions.None, TimeSpan.FromMilliseconds(200));
-
-            // Examines the domain part of the email and normalizes it.
-            string DomainMapper(Match match)
-            {
-                // Use IdnMapping class to convert Unicode domain names.
-                var idn = new IdnMapping();
-
-                // Pull out and process domain name (throws ArgumentException on invalid)
-                string domainName = idn.GetAscii(match.Groups[2].Value);
-
-                return match.Groups[1].Value + domainName;
-            }
-        }
-        catch (RegexMatchTimeoutException e)
-        {
-            return false;
-        }
-        catch (ArgumentException e)
-        {
-            return false;
-        }
-
-        try
-        {
-            return Regex.IsMatch(email,
-                @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
-        }
-        catch (RegexMatchTimeoutException)
-        {
-            return false;
-        }
-    } }
+                try
+                {
+                    return Regex.IsMatch(email,
+                        @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                        RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+                }
+                catch (RegexMatchTimeoutException)
+                {
+                    return false;
+                }
+            } }
