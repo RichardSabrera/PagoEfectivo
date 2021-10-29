@@ -12,8 +12,7 @@
 <div class="form-group">
     <label for="exampleInputEmail1">Ingrese el código a canjear</label>
 
-    <input class="form-control" placeholder="Enter your text" @bind-value="@value" />
-
+    <input class="form-control" placeholder="Ingrese su código" @bind-value="@value" />
 </div>
 
 <button class="btn btn-primary" @onclick="OnInitializedAsync">Canjear</button>
@@ -21,10 +20,10 @@
 @if (!String.IsNullOrEmpty(_message))
 {
     <br />
+    <br />
     <div class="alert alert-primary" role="alert">
         @_message
     </div>
-
 }
 
 

@@ -1,0 +1,72 @@
+﻿
+@page "/generadorcodigo"
+
+@using System.Text
+@using Newtonsoft.Json
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using Domain.Entities;
+@inject IHttpClientFactory ClientFactory
+
+<h1>GeneradorCodigo</h1>
+
+<div class="form-group">
+    <label for="exampleInputEmail1">Email</label>
+    <input type="email" class="form-control" placeholder="Ingrese su email" @bind-value="@email">
+</div>
+<div class="form-group">
+    <label for="exampleInputPassword1">Nombres</label>
+    <input type="text" class="form-control" placeholder="Ingrese sus nombres" @bind-value="@name">
+</div>
+<div class="form-check">
+    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+</div>
+
+<button class="btn btn-primary" @onclick="OnInitializedAsync">Generar</button>
+
+@if (!String.IsNullOrEmpty(_message))
+{
+    <br />
+    <br />
+    <div class="alert alert-primary" role="alert">
+        @_message
+    </div>
+}
+
+@code {
+
+    private string name { get; set; }
+    private string email { get; set; }
+    private static string _message = string.Empty;
+    private bool shouldRender;
+    protected override bool ShouldRender() => shouldRender;
+
+    private async Task OnInitializedAsync()
+    {
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"https://localhost:44396/api/GenerateCode");
+            var client = ClientFactory.CreateClient();
+
+            request.Content = new StringContent(JsonConvert.SerializeObject(new Client() { Name = name, Email = email }), Encoding.UTF8, "application/json");
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                ResponseCustom _response = await System.Text.Json.JsonSerializer.DeserializeAsync<ResponseCustom>(responseStream);
+                _message = _response.message.ToString();
+            }
+
+            shouldRender = true;
+
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+    }
+}

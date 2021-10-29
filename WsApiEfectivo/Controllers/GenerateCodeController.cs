@@ -22,7 +22,6 @@ namespace WsApiEfectivo.Controllers
             ConstVariable.connStr = _configuration.GetConnectionString("DevConnection");
         }
 
-        // POST api/<GenerateCodeController>
         [HttpPost]
         public ActionResult Post([FromBody] Client client)
         {
