@@ -1,0 +1,64 @@
+﻿@page "/listar"
+
+<h1>Listar</h1>
+
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using Newtonsoft.Json
+@using Domain.Entities;
+@inject IHttpClientFactory ClientFactory
+
+@if (searchAlls == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Tiempo de Expiración</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var search in searchAlls)
+            {
+                <tr>
+                    <td>@search.Name</td>
+                    <td>@search.Email</td>
+                    <td>@search.Code</td>
+                    <td>@search.Description</td>
+                    <td>@search.TimeExpire.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+
+    private List<SearchAll> searchAlls = new List<SearchAll>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:44396/api/SearchList");
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseStream = await response.Content.ReadAsStringAsync();
+            ResponseCustom _response = JsonConvert.DeserializeObject<ResponseCustom>(responseStream.ToString());
+            searchAlls.AddRange(JsonConvert.DeserializeObject<List<SearchAll>>(_response.result.ToString()));
+        }
+
+    }
+
+}

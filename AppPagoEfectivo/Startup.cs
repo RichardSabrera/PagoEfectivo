@@ -1,5 +1,4 @@
 using AppPagoEfectivo.Connection;
-using AppPagoEfectivo.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +28,6 @@ namespace AppPagoEfectivo
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<CalledToApi>();
             services.AddHttpClient();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
