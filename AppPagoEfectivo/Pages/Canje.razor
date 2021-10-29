@@ -1,0 +1,65 @@
+﻿@page "/canje"
+
+@using AppPagoEfectivo.Connection
+
+@using System.Text.Json
+@using System.Text.Json.Serialization;
+@using Domain.Entities;
+@inject IHttpClientFactory ClientFactory
+
+<h1>Canje de código</h1>
+
+<div class="form-group">
+    <label for="exampleInputEmail1">Ingrese el código a canjear</label>
+
+    <input class="form-control" placeholder="Enter your text" @bind-value="@value" />
+
+</div>
+
+<button class="btn btn-primary" @onclick="OnInitializedAsync">Canjear</button>
+
+@if (!String.IsNullOrEmpty(_message))
+{
+    <br />
+    <div class="alert alert-primary" role="alert">
+        @_message
+    </div>
+
+}
+
+
+@code {
+
+    private string value { get; set; }
+    private static string _message = string.Empty;
+    private bool shouldRender;
+    protected override bool ShouldRender() => shouldRender;
+
+    private async Task OnInitializedAsync()
+    {
+        try
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"https://localhost:44396/api/Exchange/{value}");
+            var client = ClientFactory.CreateClient();
+
+            var response = await client.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                ResponseCustom _response = await JsonSerializer.DeserializeAsync<ResponseCustom>(responseStream);
+                _message = _response.message.ToString();
+            }
+
+            shouldRender = true;
+
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+    }
+
+}
