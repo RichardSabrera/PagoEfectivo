@@ -13,9 +13,10 @@ namespace WsApiEfectivo.DataAccess
     {
         private static BaseDataAccess conn = new BaseDataAccess(ConstVariable.connStr);
         private int _value = 0;
-        private static List<SearchAll> searchAlls = new List<SearchAll>();
+        private static List<SearchAll> searchAlls;
         public async Task<List<SearchAll>> SearchListAll()
         {
+            searchAlls = new List<SearchAll>();
             var result = await Task.Run(() => conn.ConnectionWithParameters("SP_SEARCH_ALL", new List<Parameters>() { }));
 
             foreach (DataRow dr in result.Rows)
