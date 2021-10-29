@@ -24,6 +24,12 @@ Configuración WsApiEfectivoTests
 1. abrir todos los archivos .cs  
 2. Modificar la variable "sqlConn" que contiene la conexión a la base de datos
 
+Iniciar los proyectos WsApiEfectivo y AppPagoEfectivo al mismo tiempo.
+1. Ir a Propiedades/Propiedades ccomunes
+2. Seleccionar Proyecto de inicio
+3. Marcar la opción de proyectos de inicio múltiples
+4. Seleccionar Iniciar en WsApiEfectivo y AppPagoEfectivo
+
 
 Nota: Por el momento no se estan considerando los CORS
 
