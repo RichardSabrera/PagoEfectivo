@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppPagoEfectivo", "AppPagoEfectivo\AppPagoEfectivo.csproj", "{450BD616-CBCE-45AB-A445-98A31912CFE8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unit Test", "Unit Test", "{9BC92701-3625-49AA-99AB-4A7AFF0EAB5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WsApiEfectivoTests", "WsApiEfectivoTests\WsApiEfectivoTests.csproj", "{1AEE5E60-E832-495F-B78B-1C279C571A01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,10 @@ Global
 		{450BD616-CBCE-45AB-A445-98A31912CFE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{450BD616-CBCE-45AB-A445-98A31912CFE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{450BD616-CBCE-45AB-A445-98A31912CFE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AEE5E60-E832-495F-B78B-1C279C571A01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AEE5E60-E832-495F-B78B-1C279C571A01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AEE5E60-E832-495F-B78B-1C279C571A01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AEE5E60-E832-495F-B78B-1C279C571A01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +54,7 @@ Global
 		{89AD9153-8797-4F7E-85A8-531896A5C4EC} = {C964A116-2F17-44A9-9214-0BB88A3CD7ED}
 		{98BB3067-C842-49C4-9637-4967A847F690} = {C964A116-2F17-44A9-9214-0BB88A3CD7ED}
 		{450BD616-CBCE-45AB-A445-98A31912CFE8} = {93F38293-2779-4D7D-A1C1-8B76514CB1BE}
+		{1AEE5E60-E832-495F-B78B-1C279C571A01} = {9BC92701-3625-49AA-99AB-4A7AFF0EAB5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1263B08D-385D-4838-BBEF-A123E38BF8B6}

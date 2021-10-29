@@ -24,7 +24,6 @@ namespace WsApiEfectivo.Controllers
             ConstVariable.connStr = _configuration.GetConnectionString("DevConnection");
         }
 
-        // GET api/<SearchListController>/5
         [HttpGet]
         public ActionResult Get()
         {
