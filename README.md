@@ -7,6 +7,7 @@ Inicializar el proyecto.
 Base de Datos
 
 1. En la carpeta DB se encontrará un script que generará la Base de datos a usar.
+2. Abrir y ejecutar el cual generará las tablas y procedimientos.
 
 Configuración WsApiEfectivo
 
@@ -24,5 +25,5 @@ Configuración WsApiEfectivoTests
 2. Modificar la variable "sqlConn" que contiene la conexión a la base de datos
 
 
-
+Nota: Por el momento no se estan considerando los CORS
 
